@@ -29,22 +29,60 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/imgUser"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:layout_marginBottom="12dp"
-            android:src="@color/black"
-            app:civ_border_color="@color/black"
-            app:civ_border_width="2dp" />
+        <RelativeLayout
+            android:gravity="center"
+            android:id="@+id/container_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/userName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textSize="22sp" />
+            <LinearLayout
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/imgUser"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_marginBottom="12dp"
+                    android:src="@color/black"
+                    app:civ_border_color="@color/black"
+                    app:civ_border_width="2dp" />
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textSize="22sp"/>
+
+                <TextView
+                    android:id="@+id/user_github_name"
+                    android:textSize="12sp"
+                    android:text="@string/detail_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:background="@color/white"
+                android:id="@+id/loader_profile"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 

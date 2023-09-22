@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         binding.loader.visibility = View.VISIBLE
 
         val client = AsyncHttpClient()
-        client.addHeader("Authorization", "Token <your_token>")
+        client.addHeader("Authorization", "Token your_token")
         client.addHeader("User-Agent", "request")
         client.get("https://api.github.com/search/users?q=$key", object : AsyncHttpResponseHandler(){
             override fun onSuccess(statusCode: Int, headers: Array<Header>, responseBody: ByteArray) {
@@ -60,7 +60,8 @@ class MainActivity : AppCompatActivity() {
                         val item = itemsArray.getJSONObject(i)
                         val login = item.getString("login")
                         val avatarUrl = item.getString("avatar_url")
-                        val result = User(login, avatarUrl)
+                        val name = item.getString("id")
+                        val result = User(login, avatarUrl, name)
                         list.add(result)
                     }
 
@@ -101,6 +102,7 @@ class MainActivity : AppCompatActivity() {
                 val showUser = Intent(this@MainActivity, ShowUser::class.java)
                 showUser.putExtra("photo", data.avatar_url)
                 showUser.putExtra("name", data.login)
+                showUser.putExtra("id", data.name)
                 startActivity(showUser)
             }
         })

@@ -42,7 +42,7 @@ class FollowersFragment : Fragment() {
     private fun fetchData(key: String) {
         val client = AsyncHttpClient()
 
-        client.addHeader("Authorization", "Token <your_token>")
+        client.addHeader("Authorization", "Token your_token")
         client.addHeader("User-Agent", "request")
         client.get("https://api.github.com/users/$key/following", object : AsyncHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<Header>, responseBody: ByteArray) {
@@ -57,7 +57,8 @@ class FollowersFragment : Fragment() {
                         val jsonObject = itemsArray.getJSONObject(i)
                         val login = jsonObject.getString("login")
                         val avatarUrl = jsonObject.getString("avatar_url")
-                        val result = User(login, avatarUrl)
+                        val name = jsonObject.getString("id")
+                        val result = User(login, avatarUrl, name)
                         listUser.add(result)
                     }
                     showRecyclers()
