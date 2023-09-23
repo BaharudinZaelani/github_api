@@ -60,15 +60,40 @@
 
                 <TextView
                     android:id="@+id/user_github_name"
-                    android:textSize="12sp"
+                    android:textSize="15sp"
                     android:text="@string/detail_user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/countFollowers"
+                        android:layout_marginEnd="5dp"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/detail_user_name"/>
+
+                    <TextView
+                        android:id="@+id/countFollowing"
+                        android:layout_marginStart="5dp"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/detail_user_name"/>
+                </LinearLayout>
 
             </LinearLayout>
 
 
             <LinearLayout
+                android:visibility="visible"
                 android:background="@color/white"
                 android:id="@+id/loader_profile"
                 android:layout_width="match_parent"

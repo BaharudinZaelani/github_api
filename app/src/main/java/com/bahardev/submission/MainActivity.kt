@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         binding.loader.visibility = View.VISIBLE
 
         val client = AsyncHttpClient()
-        client.addHeader("Authorization", "Token your_token")
+        client.addHeader("Authorization", "Token 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")
         client.addHeader("User-Agent", "request")
         client.get("https://api.github.com/search/users?q=$key", object : AsyncHttpResponseHandler(){
             override fun onSuccess(statusCode: Int, headers: Array<Header>, responseBody: ByteArray) {

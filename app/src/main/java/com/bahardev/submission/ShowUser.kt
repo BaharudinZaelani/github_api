@@ -49,7 +49,7 @@ class ShowUser : AppCompatActivity() {
     private fun fetchData(key: String) {
         val client = AsyncHttpClient()
 
-        client.addHeader("Authorization", "Token your_token")
+        client.addHeader("Authorization", "Token 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")
         client.addHeader("User-Agent", "request")
         client.get("https://api.github.com/users/$key", object : AsyncHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<Header>, responseBody: ByteArray) {
@@ -58,6 +58,8 @@ class ShowUser : AppCompatActivity() {
                     Glide.with(this@ShowUser).load(res.getString("avatar_url")).into(binding.imgUser)
                     binding.userName.text = intent.getStringExtra("name")
                     binding.userGithubName.text = res.getString("name")
+                    binding.countFollowers.text = "Followers :" + res.getString("followers")
+                    binding.countFollowing.text = "Following :" + res.getString("following")
                     binding.loaderProfile.visibility = View.GONE
                 }catch (e: Exception) {
                     Log.d("ERROR", e.message.toString())
