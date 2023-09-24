@@ -6,11 +6,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.get
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bahardev.submission.R
 import com.bahardev.submission.ui.dataclass.User
 import com.bahardev.submission.ui.adapter.UserAdapter
 import com.bahardev.submission.databinding.ActivityMainBinding
+import com.bahardev.submission.ui.models.SettingModelFactory
+import com.bahardev.submission.ui.models.SettingViewModel
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
@@ -33,10 +38,19 @@ class MainActivity : AppCompatActivity() {
             // searchbar
             searchBar.inflateMenu(R.menu.menu_form)
             searchBar.setOnMenuItemClickListener { menuItem ->
-                val followers = Intent(this@MainActivity, FavoriteUser::class.java)
-                startActivity(followers)
+                when( menuItem.itemId ) {
+                    R.id.favorite -> {
+                        val followers = Intent(this@MainActivity, FavoriteUser::class.java)
+                        startActivity(followers)
+                    }
+                    R.id.menu2 -> {
+                        val setting = Intent(this@MainActivity, SettingsActivity::class.java)
+                        startActivity(setting)
+                    }
+                }
                 true
             }
+
 
             // search view
             searchView.setupWithSearchBar(searchBar)
@@ -48,6 +62,19 @@ class MainActivity : AppCompatActivity() {
                     searchView.hide()
                     false
                 }
+        }
+
+        // check theme
+        val pref = SettingPreferences.getInstance(application.dataStore)
+        val settingViewModel = ViewModelProvider(this, SettingModelFactory(pref)).get(
+            SettingViewModel::class.java
+        )
+        settingViewModel.getThemeSettings().observe(this) { isDarkMode: Boolean ->
+            if ( isDarkMode ) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
         }
     }
 
