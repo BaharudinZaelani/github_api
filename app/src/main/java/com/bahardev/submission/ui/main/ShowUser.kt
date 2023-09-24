@@ -1,11 +1,19 @@
-package com.bahardev.submission
+package com.bahardev.submission.ui.main
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.lifecycle.ViewModelProvider
+import com.bahardev.submission.R
+import com.bahardev.submission.database.UserGithub
+import com.bahardev.submission.ui.adapter.SectionsPagerAdapter
 import com.bahardev.submission.databinding.ActivityShowUserBinding
+import com.bahardev.submission.helper.DateHelper
+import com.bahardev.submission.ui.models.UserGithubModel
+import com.bahardev.submission.ui.models.ViewModelFactory
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.loopj.android.http.AsyncHttpClient
@@ -16,6 +24,9 @@ import org.json.JSONObject
 
 class ShowUser : AppCompatActivity() {
     private lateinit var binding: ActivityShowUserBinding
+    private lateinit var userGithubModel: UserGithubModel
+    private var userGithub: UserGithub = UserGithub()
+    private var tmpImageAvatar: String = ""
 
     companion object {
         @StringRes
@@ -30,23 +41,57 @@ class ShowUser : AppCompatActivity() {
         binding = ActivityShowUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        Log.d("ZAW", intent.getStringExtra("photo").toString())
+        // Fetch data user
         fetchData(intent.getStringExtra("name").toString())
 
+        // Show User
         val sectionsPagerAdapter = SectionsPagerAdapter(this)
         sectionsPagerAdapter.userName = intent.getStringExtra("name").toString()
         binding.viewPager.adapter = sectionsPagerAdapter
 
+        // Tab
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
             tab.text = resources.getString(TAB_TITLES[position])
 
         }.attach()
         supportActionBar?.elevation = 0f
 
+        // check has fav
+        val userModel = obtainViewModel(this@ShowUser)
+        userGithubModel = obtainViewModel(this@ShowUser)
+        val favActivity = Intent(this@ShowUser, FavoriteUser::class.java)
+        userModel.getByUsername(intent.getStringExtra("name").toString()).observe(this) { userList ->
+            val user = JSONArray(userList)
+            if ( user.length() > 0 ) {
+                binding.fabAdd.setImageResource(R.drawable.clear)
+                binding.fabAdd.setOnClickListener {
+                    userGithub.let {
+                        userGithubModel.deleteByUsername(intent.getStringExtra("name").toString())
+                    }
+                    binding.fabAdd.setImageResource(R.drawable.bookmark)
+                    startActivity(favActivity)
+                }
+            }else {
+                binding.fabAdd.setOnClickListener {
+                    userGithub.let {
+                        userGithub.username = intent.getStringExtra("name").toString()
+                        userGithub.avatarUrl = tmpImageAvatar
+                        userGithub.date = DateHelper.getCurrentDate()
+                        userGithubModel.insert(userGithub as UserGithub)
+                    }
+                    startActivity(favActivity)
+                }
+            }
+        }
+
     }
 
-    private fun fetchData(key: String) {
+    private fun obtainViewModel(activity: AppCompatActivity): UserGithubModel {
+        val factory = ViewModelFactory.getInstance(activity.application)
+        return ViewModelProvider(activity, factory).get(UserGithubModel::class.java)
+    }
+
+    private fun fetchData(key: String, addToFav: Boolean = false) {
         val client = AsyncHttpClient()
 
         client.addHeader("Authorization", "Token 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")
@@ -55,12 +100,16 @@ class ShowUser : AppCompatActivity() {
             override fun onSuccess(statusCode: Int, headers: Array<Header>, responseBody: ByteArray) {
                 try {
                     val res = JSONObject(String(responseBody))
+                    tmpImageAvatar = res.getString("avatar_url")
+
                     Glide.with(this@ShowUser).load(res.getString("avatar_url")).into(binding.imgUser)
                     binding.userName.text = intent.getStringExtra("name")
                     binding.userGithubName.text = res.getString("name")
                     binding.countFollowers.text = "Followers :" + res.getString("followers")
                     binding.countFollowing.text = "Following :" + res.getString("following")
+
                     binding.loaderProfile.visibility = View.GONE
+                    binding.fabAdd.visibility = View.VISIBLE
                 }catch (e: Exception) {
                     Log.d("ERROR", e.message.toString())
                     binding.loaderProfile.visibility = View.GONE

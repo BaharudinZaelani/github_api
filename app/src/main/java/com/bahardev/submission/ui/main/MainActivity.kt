@@ -1,4 +1,4 @@
-package com.bahardev.submission
+package com.bahardev.submission.ui.main
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,19 +7,19 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bahardev.submission.R
+import com.bahardev.submission.ui.dataclass.User
+import com.bahardev.submission.ui.adapter.UserAdapter
 import com.bahardev.submission.databinding.ActivityMainBinding
-import com.google.gson.Gson
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
-import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Objects
-import kotlin.reflect.typeOf
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val list = mutableListOf<User>()
+    private var fetched : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,13 +29,20 @@ class MainActivity : AppCompatActivity() {
         // result
         binding.containerViewSearch.setHasFixedSize(true)
 
-        // search view
         with(binding) {
+            // searchbar
+            searchBar.inflateMenu(R.menu.menu_form)
+            searchBar.setOnMenuItemClickListener { menuItem ->
+                val followers = Intent(this@MainActivity, FavoriteUser::class.java)
+                startActivity(followers)
+                true
+            }
+
+            // search view
             searchView.setupWithSearchBar(searchBar)
             searchView
                 .editText
                 .setOnEditorActionListener { textView, actionId, event ->
-                    list.clear()
                     // Fecth Data
                     fetchData(searchView.text.toString())
                     searchView.hide()
@@ -46,6 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun fetchData( key: String ) {
         binding.loader.visibility = View.VISIBLE
+        list.clear()
 
         val client = AsyncHttpClient()
         client.addHeader("Authorization", "Token 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")
@@ -64,7 +72,9 @@ class MainActivity : AppCompatActivity() {
                         val result = User(login, avatarUrl, name)
                         list.add(result)
                     }
+                    if ( fetched ) {
 
+                    }
                     showRecycler()
                 } catch (e: Exception) {
                     Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_SHORT).show()

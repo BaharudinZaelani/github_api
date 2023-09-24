@@ -1,13 +1,14 @@
-package com.bahardev.submission
+package com.bahardev.submission.ui.adapter
 
-import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bahardev.submission.R
+import com.bahardev.submission.ui.dataclass.User
 import com.bumptech.glide.Glide
 
 class UserAdapter( private val listUser: MutableList<User> ) : RecyclerView.Adapter<UserAdapter.ListViewHolder>() {
@@ -35,7 +36,7 @@ class UserAdapter( private val listUser: MutableList<User> ) : RecyclerView.Adap
     override fun getItemCount(): Int = listUser.size
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val (name, photo, idGithub) = listUser[position]
+        val (name: String, photo: String, idGithub: String) = listUser[position]
         Glide.with(holder.itemView).load(photo).into(holder.imgPhoto)
         holder.name.text = name
         holder.idGithub.text = idGithub

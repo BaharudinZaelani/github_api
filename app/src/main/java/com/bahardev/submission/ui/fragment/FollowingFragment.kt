@@ -1,5 +1,6 @@
-package com.bahardev.submission
+package com.bahardev.submission.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,12 +11,16 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bahardev.submission.R
+import com.bahardev.submission.ui.dataclass.User
+import com.bahardev.submission.ui.adapter.UserAdapter
+import com.bahardev.submission.ui.main.ShowUser
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
 import org.json.JSONArray
 
-class FollowersFragment : Fragment() {
+class FollowingFragment : Fragment() {
     private lateinit var loader: FrameLayout
     private lateinit var container: RecyclerView
     private val listUser = mutableListOf<User>()
@@ -92,8 +97,11 @@ class FollowersFragment : Fragment() {
 
         listUser.setOnItemClickCallback(object : UserAdapter.OnItemClickCallback {
             override fun onItemClicked(data: User) {
-                val toast = Toast.makeText(requireActivity(), "This is " + data.login, Toast.LENGTH_SHORT) // in Activity
-                toast.show()
+                val showUser = Intent(activity, ShowUser::class.java)
+                showUser.putExtra("photo", data.avatar_url)
+                showUser.putExtra("name", data.login)
+                showUser.putExtra("id", data.name)
+                startActivity(showUser)
             }
         })
     }

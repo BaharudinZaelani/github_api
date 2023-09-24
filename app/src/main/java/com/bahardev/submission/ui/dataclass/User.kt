@@ -1,4 +1,4 @@
-package com.bahardev.submission
+package com.bahardev.submission.ui.dataclass
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
