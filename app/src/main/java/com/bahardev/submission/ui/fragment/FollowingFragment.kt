@@ -47,7 +47,7 @@ class FollowingFragment : Fragment() {
     private fun fetchData(key: String) {
         val client = AsyncHttpClient()
 
-        client.addHeader("Authorization", "Token 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")
+        client.addHeader("Authorization", "Token your_token")
         client.addHeader("User-Agent", "request")
         client.get("https://api.github.com/users/$key/following", object : AsyncHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<Header>, responseBody: ByteArray) {

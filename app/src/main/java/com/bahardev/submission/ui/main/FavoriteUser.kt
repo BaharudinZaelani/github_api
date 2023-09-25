@@ -20,6 +20,7 @@ class FavoriteUser : AppCompatActivity() {
     private lateinit var favUserContainer: RecyclerView
 
     private fun construct() {
+        list.clear()
         favUserContainer = findViewById(R.id.favUserRecyclerView)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +29,6 @@ class FavoriteUser : AppCompatActivity() {
         construct()
 
         favUserContainer.setHasFixedSize(true)
-
         val userModel = obtainViewModel(this@FavoriteUser)
         userModel.getAllUser().observe(this) { userList ->
             userList.map {res ->
@@ -57,6 +57,11 @@ class FavoriteUser : AppCompatActivity() {
                 startActivity(showUser)
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        list.clear()
     }
 }
 
